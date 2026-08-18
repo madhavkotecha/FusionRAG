@@ -1,0 +1,54 @@
+name: kag_ingestion
+description: "KAG-style knowledge graph construction: parse, chunk semantically, extract with schema, build hierarchical subgraph, index vectors in Qdrant"
+
+steps:
+  - component: kag.file_reader
+    config:
+      content_field: content
+      id_field: id
+
+  - component: kag.semantic_chunker
+    config:
+      max_chunk_size: 500
+      heading_patterns:
+        - "^#{1,6}\\s"
+        - "^\\d+\\.\\s"
+
+  - component: kag.schema_free_extractor
+    config:
+      llm_model: gpt-4o-mini
+
+  - component: kag.schema_constrained_extractor
+    config:
+      llm_model: gpt-4o-mini
+      schema:
+        entity_types:
+          Person: [name, role, affiliation]
+          Organization: [name, type, location]
+          Technology: [name, category, version]
+        relation_types: [works_at, develops, uses, part_of, located_in]
+
+  - component: kag.subgraph_builder
+    config:
+      add_chunk_links: true
+
+  - component: openai_embedder
+    config:
+      model: text-embedding-3-small
+
+  - component: qdrant_indexer
+    config:
+      url: http://qdrant:6333
+      dimension: 1536
+      distance: cosine
+
+  - component: lightrag.neo4j_graph
+    config:
+      uri: bolt://neo4j:7687
+      username: neo4j
+      password: neo4j_dev_password
+      database: neo4j
+
+  - component: lightrag.redis_kv
+    config:
+      key_prefix: "rrag:kag:"

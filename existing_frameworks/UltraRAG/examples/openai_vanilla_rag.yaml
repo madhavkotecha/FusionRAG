@@ -1,0 +1,24 @@
+# Vanilla RAG with OpenAI (no GPU needed)
+# Uses OpenAI for both LLM generation and embeddings
+
+# MCP Servers
+servers:
+  benchmark: servers/benchmark
+  retriever: servers/retriever
+  prompt: servers/prompt
+  generation: servers/generation
+  evaluation: servers/evaluation
+  custom: servers/custom
+
+# Pipeline: load data → init retriever → search → init LLM → prompt → generate → extract → evaluate
+pipeline:
+- benchmark.get_data
+- retriever.retriever_init
+- retriever.retriever_embed
+- retriever.retriever_index
+- retriever.retriever_search
+- generation.generation_init
+- prompt.qa_rag_boxed
+- generation.generate
+- custom.output_extract_from_boxed
+- evaluation.evaluate

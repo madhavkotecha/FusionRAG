@@ -1,0 +1,25 @@
+# Traefik v3 — development configuration
+# Self-signed TLS on port 443, dashboard enabled, raw Docker socket
+# Access: https://localhost:8000 (mapped from host 8000 → container 443)
+
+api:
+  insecure: true
+  dashboard: true
+
+entryPoints:
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: rrag-net
+
+log:
+  level: DEBUG
+
+accessLog:
+  bufferingSize: 100

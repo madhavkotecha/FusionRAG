@@ -1,0 +1,367 @@
+/* -- Fonts ------------------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* -- Reset Keycloak / PatternFly v5 defaults -------------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0a0a0f !important;
+  font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  color: #f0f0f8;
+  overflow: hidden;
+}
+
+/* Hide all Keycloak chrome */
+#kc-header, .kc-logo-text, #kc-header-wrapper,
+.pf-v5-c-login__header, .pf-v5-c-login__footer,
+.pf-v5-c-login__main-header, .pf-v5-c-login__main-footer,
+.pf-c-login__header, .pf-c-login__footer,
+.pf-c-brand, #kc-locale { display: none !important; }
+
+/* -- Unwrap PatternFly containers to allow our grid ------- */
+.pf-v5-c-login,
+.pf-c-login {
+  all: unset !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+  background: #0a0a0f !important;
+}
+
+.pf-v5-c-login__container,
+.pf-c-login__container {
+  all: unset !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+}
+
+.pf-v5-c-login__main,
+.pf-c-login__main {
+  all: unset !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+}
+
+/* THIS is where our split layout lives */
+.pf-v5-c-login__main-body,
+.pf-c-login__main-body {
+  all: unset !important;
+  display: grid !important;
+  grid-template-columns: 3fr 2fr !important;
+  width: 100% !important;
+  height: 100vh !important;
+  background: #0a0a0f !important;
+}
+
+/* -- Left panel (hero) ------------------------------------ */
+.rrag-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0f;
+  overflow: hidden;
+  padding: 3rem;
+  min-height: 100vh;
+}
+
+.rrag-hero canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.rrag-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 420px;
+}
+
+/* Brand mark */
+.rrag-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4d65ff, #8b5cf6);
+  box-shadow: 0 0 30px rgba(77, 101, 255, 0.3);
+  margin-bottom: 1.25rem;
+}
+
+.rrag-brand svg {
+  width: 28px;
+  height: 28px;
+  color: #fff;
+}
+
+.rrag-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f0f0f8;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.rrag-hero .tagline {
+  font-size: 1rem;
+  color: #a0a0be;
+  margin: 0 0 2rem;
+  font-weight: 400;
+}
+
+.rrag-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, #4d65ff, #a87fff);
+  margin: 0 auto 2rem;
+  border-radius: 2px;
+}
+
+/* Feature callouts */
+.rrag-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.rrag-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  opacity: 0;
+  animation: fadeSlideIn 0.5s ease-out forwards;
+}
+
+.rrag-features li:nth-child(1) { animation-delay: 0.3s; }
+.rrag-features li:nth-child(2) { animation-delay: 0.5s; }
+.rrag-features li:nth-child(3) { animation-delay: 0.7s; }
+
+.rrag-feature-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(77, 101, 255, 0.1);
+  border: 1px solid rgba(77, 101, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.rrag-feature-text strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f0f0f8;
+  margin-bottom: 0.15rem;
+}
+
+.rrag-feature-text span {
+  font-size: 0.8rem;
+  color: #6b6b88;
+  line-height: 1.4;
+}
+
+/* -- Right panel (form) ----------------------------------- */
+.rrag-form-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0f1117;
+  border-left: 1px solid #232536;
+  padding: 3rem;
+  position: relative;
+  min-height: 100vh;
+}
+
+.rrag-form-wrapper {
+  width: 100%;
+  max-width: 380px;
+}
+
+.rrag-form-heading {
+  font-size: 0.9rem;
+  color: #a0a0be;
+  margin: 0 0 1.75rem;
+  font-weight: 400;
+}
+
+/* Style Keycloak form elements */
+.rrag-form-wrapper label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #a0a0be;
+  margin-bottom: 0.4rem;
+}
+
+.rrag-form-wrapper input[type="text"],
+.rrag-form-wrapper input[type="password"],
+.rrag-form-wrapper input[type="email"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: #181a24;
+  border: 1px solid #232536;
+  border-radius: 8px;
+  color: #f0f0f8;
+  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.rrag-form-wrapper input:focus {
+  border-color: #4d65ff;
+  box-shadow: 0 0 0 3px rgba(77, 101, 255, 0.15);
+}
+
+.rrag-form-wrapper input::placeholder {
+  color: #6b6b88;
+}
+
+/* Submit button — scoped to avoid matching other #kc-login elements */
+.rrag-form-wrapper input[type="submit"],
+.rrag-form-wrapper button[type="submit"] {
+  display: block !important;
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #4d65ff, #a87fff) !important;
+  color: #fff !important;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  border: none !important;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+  margin-top: 0.5rem;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.rrag-form-wrapper input[type="submit"]:hover,
+.rrag-form-wrapper button[type="submit"]:hover {
+  box-shadow: 0 0 24px rgba(77, 101, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Links */
+.rrag-form-wrapper a {
+  color: #a0a0be;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+
+.rrag-form-wrapper a:hover {
+  color: #4d65ff;
+}
+
+/* Error / alert messages */
+.rrag-form-wrapper .alert,
+.rrag-form-wrapper .pf-v5-c-alert,
+.rrag-form-wrapper .pf-c-alert,
+.kc-feedback-text {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fca5a5;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* Remember me checkbox */
+.rrag-form-wrapper .checkbox label,
+.rrag-form-wrapper .pf-v5-c-check label,
+.rrag-form-wrapper .pf-c-check label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #a0a0be;
+  cursor: pointer;
+}
+
+/* Footer */
+.rrag-footer {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 0.75rem;
+  color: #6b6b88;
+}
+
+/* -- Animations ------------------------------------------- */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -- Responsive ------------------------------------------- */
+@media (max-width: 900px) {
+  .pf-v5-c-login__main-body,
+  .pf-c-login__main-body {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rrag-hero {
+    display: none;
+  }
+
+  .rrag-form-panel {
+    border-left: none;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rrag-form-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(77,101,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(168,127,255,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .rrag-mobile-brand {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .rrag-mobile-brand .rrag-brand {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .rrag-mobile-brand h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f0f0f8;
+    margin: 0;
+  }
+}
+
+@media (min-width: 901px) {
+  .rrag-mobile-brand { display: none !important; }
+}

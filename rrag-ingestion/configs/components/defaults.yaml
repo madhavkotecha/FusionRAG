@@ -1,0 +1,63 @@
+# Default component configurations
+# These can be overridden per-pipeline or per-step
+
+parsers:
+  ultrarag.multi_parser:
+    formats: [pdf, docx, md, txt]
+    encoding: utf-8
+
+chunkers:
+  lightrag.token_chunker:
+    chunk_token_size: 1200
+    chunk_overlap_token_size: 100
+  ultrarag.sentence_chunker:
+    min_sentences: 3
+    max_sentences: 10
+    overlap_sentences: 1
+  ultrarag.recursive_chunker:
+    chunk_size: 512
+    chunk_overlap: 50
+  kag.semantic_chunker:
+    max_chunk_size: 500
+
+extractors:
+  lightrag.entity_extractor:
+    llm_model: gpt-4o-mini
+    max_gleaning: 1
+  kag.schema_free_extractor:
+    llm_model: gpt-4o-mini
+  kag.schema_constrained_extractor:
+    llm_model: gpt-4o-mini
+
+embedders:
+  openai_embedder:
+    model: text-embedding-3-small
+    batch_size: 100
+  sentence_transformer_embedder:
+    model_name: all-MiniLM-L6-v2
+    batch_size: 64
+  e5_embedder:
+    model_name: intfloat/e5-large-v2
+    batch_size: 32
+
+storage:
+  lightrag.neo4j_graph:
+    uri: bolt://localhost:7687
+    username: neo4j
+    password: password
+  lightrag.redis_kv:
+    redis_url: redis://localhost:6381/2
+    key_prefix: "rrag:kv:"
+  lightrag.pg_vector:
+    connection_string: postgresql://rrag:rrag_dev_password@localhost:5432/rrag
+    table_name: rrag_embeddings
+
+agents:
+  agent.router:
+    llm_model: gpt-4o-mini
+  agent.reflection:
+    llm_model: gpt-4o-mini
+    min_score_threshold: 6.0
+  agent.memory:
+    redis_url: redis://localhost:6381/3
+    max_history: 20

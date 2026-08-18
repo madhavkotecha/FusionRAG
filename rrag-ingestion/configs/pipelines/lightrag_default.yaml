@@ -1,0 +1,41 @@
+name: lightrag_ingestion
+description: "LightRAG-style graph-based document ingestion: parse, chunk, extract entities/relations, embed, index vectors in Qdrant, build graph, store in Neo4j"
+
+steps:
+  - component: ultrarag.multi_parser
+    config:
+      formats: [pdf, docx, md, txt]
+
+  - component: lightrag.token_chunker
+    config:
+      chunk_token_size: 1200
+      chunk_overlap_token_size: 100
+
+  - component: lightrag.entity_extractor
+    config:
+      llm_model: gpt-4o-mini
+      entity_types: [Person, Organization, Location, Event, Concept, Technology, Document]
+      max_gleaning: 1
+
+  - component: openai_embedder
+    config:
+      model: text-embedding-3-small
+      batch_size: 100
+
+  - component: qdrant_indexer
+    config:
+      url: http://qdrant:6333
+      dimension: 1536
+      distance: cosine
+
+  - component: lightrag.graph_builder
+    config:
+      merge_strategy: merge_descriptions
+      dedup_threshold: 0.9
+
+  - component: lightrag.neo4j_graph
+    config:
+      uri: bolt://neo4j:7687
+      username: neo4j
+      password: neo4j_dev_password
+      database: neo4j

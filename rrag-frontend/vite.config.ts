@@ -1,0 +1,29 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    port: 5173,
+    proxy: {
+      '/auth': 'http://localhost:8000',
+      '/api': 'http://localhost:8000',
+      '/health': 'http://localhost:8000',
+      '/users': 'http://localhost:8000',
+      '/workspaces': 'http://localhost:8000',
+      '/kc': 'http://localhost:8000',
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'editor': ['@monaco-editor/react'],
+          'flow': ['@xyflow/react'],
+        },
+      },
+    },
+  },
+})

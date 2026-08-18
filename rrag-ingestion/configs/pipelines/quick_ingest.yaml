@@ -1,0 +1,23 @@
+name: quick_ingest
+description: "Simple ingestion pipeline: parse documents, chunk text, generate embeddings, and index to Qdrant for vector search"
+
+steps:
+  - component: ultrarag.multi_parser
+    config:
+      formats: [pdf, docx, md, txt, csv, json]
+
+  - component: ultrarag.recursive_chunker
+    config:
+      chunk_size: 512
+      chunk_overlap: 50
+
+  - component: openai_embedder
+    config:
+      model: text-embedding-3-small
+      batch_size: 50
+
+  - component: qdrant_indexer
+    config:
+      url: http://qdrant:6333
+      dimension: 1536
+      distance: cosine

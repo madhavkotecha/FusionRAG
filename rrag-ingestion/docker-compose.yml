@@ -1,0 +1,62 @@
+services:
+  ingestion:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rrag-ingestion
+    ports:
+      - "8001:8001"
+    environment:
+      RRAG_DATABASE_URL: postgresql+asyncpg://rrag:rrag_dev_password@postgres:5432/rrag
+      RRAG_REDIS_URL: redis://redis:6379/1
+      RRAG_STORAGE_DIR: /data/documents
+      RRAG_CONFIGS_DIR: /app/configs
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ingestion_data:/data/documents
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ingestion.rule=PathPrefix(`/api/v1`)"
+      - "traefik.http.routers.ingestion.entrypoints=web"
+      - "traefik.http.routers.ingestion.middlewares=auth-verify"
+      - "traefik.http.services.ingestion.loadbalancer.server.port=8001"
+    networks:
+      - rrag-net
+
+  rq-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rrag-rq-worker
+    command: ["python", "-m", "rq", "worker", "--with-scheduler", "-u", "redis://redis:6379/1", "ingestion"]
+    environment:
+      RRAG_DATABASE_URL: postgresql+asyncpg://rrag:rrag_dev_password@postgres:5432/rrag
+      RRAG_REDIS_URL: redis://redis:6379/1
+      RRAG_STORAGE_DIR: /data/documents
+      RRAG_CONFIGS_DIR: /app/configs
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ingestion_data:/data/documents
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - rrag-net
+
+volumes:
+  ingestion_data:
+
+networks:
+  rrag-net:
+    external: true

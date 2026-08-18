@@ -1,0 +1,106 @@
+{
+  "realm": "rrag",
+  "enabled": true,
+  "displayName": "RRAG Platform",
+  "loginTheme": "rrag",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 3600,
+  "ssoSessionIdleTimeout": 86400,
+  "ssoSessionMaxLifespan": 604800,
+  "roles": {
+    "realm": [
+      {
+        "name": "rrag_user",
+        "description": "Standard RRAG platform user"
+      },
+      {
+        "name": "rrag_admin",
+        "description": "RRAG platform administrator"
+      },
+      {
+        "name": "rrag_platform_admin",
+        "description": "Cross-organization platform super-administrator"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "rrag-frontend",
+      "name": "RRAG Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "rootUrl": "https://localhost:8000",
+      "baseUrl": "/",
+      "redirectUris": [
+        "https://localhost:8000/*",
+        "http://localhost:8000/*",
+        "http://localhost:5173/*"
+      ],
+      "webOrigins": [
+        "https://localhost:8000",
+        "http://localhost:8000",
+        "http://localhost:5173"
+      ],
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://localhost:8000/*##http://localhost:8000/*"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles"
+      ]
+    },
+    {
+      "clientId": "rrag-backend",
+      "name": "RRAG Backend",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "rrag-backend-secret",
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "rootUrl": "http://localhost:3000",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:8000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8000"
+      ],
+      "protocol": "openid-connect",
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin@rrag.io",
+      "email": "admin@rrag.io",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "realmRoles": [
+        "rrag_admin",
+        "rrag_platform_admin"
+      ]
+    }
+  ],
+  "rememberMe": true,
+  "offlineSessionIdleTimeout": 2592000,
+  "offlineSessionMaxLifespan": 5184000
+}

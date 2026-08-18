@@ -1,0 +1,92 @@
+# Development overlay — relaxes production defaults for local dev.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# Access the app at: https://localhost:8000/
+# Browser will warn about self-signed cert — click through to proceed.
+# Traefik dashboard: http://localhost:8888/
+
+services:
+  postgres:
+    ports:
+      - "5433:5432"
+    read_only: false
+
+  redis:
+    ports:
+      - "6381:6379"
+    read_only: false
+
+  neo4j:
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    read_only: false
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    read_only: false
+
+  opensearch:
+    environment:
+      DISABLE_SECURITY_PLUGIN: "true"
+    ports:
+      - "9200:9200"
+    read_only: false
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+
+  qdrant:
+    ports:
+      - "6335:6333"
+      - "6336:6334"
+
+  keycloak:
+    command: start-dev --import-realm
+    ports:
+      - "8180:8080"
+    read_only: false
+
+  # Dev: map 8000 → 443 (websecure entrypoint) so https://localhost:8000 works.
+  # Traefik uses its default self-signed cert for TLS.
+  traefik:
+    ports:
+      - "8000:443"
+      - "8888:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./rrag-auth-server/traefik/traefik-dev.yml:/etc/traefik/traefik.yml:ro
+    depends_on: []
+
+  auth-server:
+    ports:
+      - "3000:3000"
+    read_only: false
+    environment:
+      KC_PUBLIC_REALM_URL: https://localhost:8000/kc/realms/rrag
+      CORS_ORIGINS: https://localhost:8000,http://localhost:5173
+
+  pipeline-service:
+    read_only: false
+    environment:
+      CORS_ORIGINS: https://localhost:8000,http://localhost:5173
+      RRAG_MINIO_ENDPOINT: minio:9000
+      RRAG_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      RRAG_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      RRAG_MINIO_COMPONENTS_BUCKET: components
+      RRAG_MINIO_USE_SSL: "false"
+      COMPONENT_LOAD_PATH: /data/components
+
+  ingestion:
+    read_only: false
+    environment:
+      CORS_ORIGINS: https://localhost:8000,http://localhost:5173
+
+  rq-worker:
+    read_only: false
+
+  frontend:
+    read_only: false
+    environment:
+      DOMAIN: localhost:8000

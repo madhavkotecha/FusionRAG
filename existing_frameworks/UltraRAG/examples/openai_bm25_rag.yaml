@@ -1,0 +1,20 @@
+# Simple RAG with BM25 retrieval + OpenAI generation (Windows-friendly, no GPU)
+
+servers:
+  benchmark: servers/benchmark
+  retriever: servers/retriever
+  prompt: servers/prompt
+  generation: servers/generation
+  evaluation: servers/evaluation
+  custom: servers/custom
+
+pipeline:
+- benchmark.get_data
+- retriever.retriever_init
+- retriever.bm25_index
+- retriever.bm25_search
+- generation.generation_init
+- prompt.qa_rag_boxed
+- generation.generate
+- custom.output_extract_from_boxed
+- evaluation.evaluate
